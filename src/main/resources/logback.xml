@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration>
+    <contextName>test</contextName>
+    <jmxConfigurator/>
+
+    <!-- APPENDER for GRAYLOG -->
+    <appender name="gelf" class="biz.paluch.logging.gelf.logback.GelfLogbackAppender">
+        <!-- Origin Host, will correspond to Source field in Graylog -->
+        <originHost>rkhiter-logback</originHost>
+
+        <!-- Target Graylog Host / port, udp: / tcp: prefix for protocol -->
+        <host>tcp:preprod.omnilog.adeo.com</host>
+        <port>10104</port>
+
+        <version>1.0</version>
+        <facility>java-test</facility>
+
+        <!-- We need this to be set to true in order to send the whole stacktrace to Graylog -->
+        <extractStackTrace>true</extractStackTrace>
+        <filterStackTrace>true</filterStackTrace>
+        <includeLocation>true</includeLocation>
+
+        <!-- Add extended information like Log4j's NDC/MDC; default false (optional) -->
+        <mdcProfiling>false</mdcProfiling>
+        <mdcFields>mdcField1,mdcField2</mdcFields>
+        <includeFullMdc>true</includeFullMdc>
+        <dynamicMdcFields>myMdc.*,[a-z]+Field</dynamicMdcFields>
+
+
+
+        <timestampPattern>yyyy-MM-dd HH:mm:ss,SSS</timestampPattern>
+        <maximumMessageSize>8192</maximumMessageSize>
+        <!-- Additional fields, can be useful for adding more identification in logs or to keep a trace (app Id, environment etc -->
+        <additionalFields>BU=HMBU,application=GraylogSpringBootDemoApplication,ApplicationVersion=1.0,ApplicationEnvironment=DEV</additionalFields>
+        <additionalFieldTypes>BU=String,application=String,ApplicationVersion=String,ApplicationVersion=String,ApplicationEnvironment=DEV</additionalFieldTypes>
+
+        <!-- LOG Threshold from where logs will be sent -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <!-- Dont forget to add the created appender to the list of appenders -->
+    <root level="DEBUG">
+        <appender-ref ref="gelf" />
+    </root>
+</configuration>

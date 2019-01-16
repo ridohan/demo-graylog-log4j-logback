@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd">
+<log4j:configuration>
+
+    <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="TEST %d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } [%t] : %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- APPENDER for GRAYLOG -->
+    <appender name="graylog" class="org.graylog2.log.GelfAppender">
+        <!-- Target Graylog Host / port, udp: / tcp: prefix for protocol -->
+        <param name="graylogHost" value="tcp:preprod.omnilog.adeo.com"/>
+        <param name="graylogPort" value="10104"/>
+
+        <!-- Origin Host, will correspond to Source field in Graylog -->
+        <param name="originHost" value="ridohan"/>
+        <!-- We need this to be set to true in order to send the whole stacktrace to Graylog -->
+        <param name="extractStacktrace" value="true"/>
+        <!-- Add extended information like Log4j's NDC/MDC; default false (optional) -->
+        <param name="addExtendedInformation" value="true"/>
+        <param name="facility" value="log4j"/>
+        <!-- LOG Threshold from where logs will be sent -->
+        <param name="Threshold" value="DEBUG"/>
+
+        <!-- Additional fields, can be useful for adding more identification in logs or to keep a trace (app Id, environment etc -->
+        <param name="additionalFields" value="{'BU': 'HMBU', 'application': 'GraylogSpringBootDemoApplication', 'ApplicationVersion': '1.0', 'ApplicationEnvironment': 'DEV'}"/>
+    </appender>
+
+    <!-- Dont forget to add the created appender to the list of appenders -->
+    <root>
+        <priority value="DEBUG"/>
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="graylog"/>
+    </root>
+
+</log4j:configuration>
